@@ -21,3 +21,9 @@
 .profile-save-btn { flex:1; padding:9px; border-radius:6px; background:#222; color:#fff; border:none; cursor:pointer; font-size:0.95rem; }
 .profile-cancel-btn { flex:1; padding:9px; border-radius:6px; background:#eee; color:#333; border:none; cursor:pointer; font-size:0.95rem; }
 .profile-delete-btn { width:100%; padding:9px; border-radius:6px; background:#fee; color:#c00; border:1px solid #fcc; cursor:pointer; font-size:0.95rem; margin-top:4px; }
+.lobby-user-count {
+  font-size: 0.8rem;
+  color: #aaa;
+  margin-bottom: 1rem;
+  text-align: center;
+}

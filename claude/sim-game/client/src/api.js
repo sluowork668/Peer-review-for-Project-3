@@ -21,6 +21,8 @@ export const api = {
   login:         (username, password) => req('/auth/login',  { method: 'POST', body: { username, password } }),
   signup:        (username, password) => req('/auth/signup', { method: 'POST', body: { username, password } }),
   me:            ()                   => req('/users/me'),
+  userCount:     ()                   => req('/users/count'),
+  leaderboard:   (page = 1)           => req(`/users/leaderboard?page=${page}`),
   updateMe:      (data)               => req('/users/me', { method: 'PATCH', body: data }),
   deleteMe:      ()                   => req('/users/me', { method: 'DELETE' }),
   searchUsers:   (q)                  => req(`/users/search?q=${encodeURIComponent(q)}`),

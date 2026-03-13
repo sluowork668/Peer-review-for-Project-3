@@ -4,6 +4,25 @@ const bcrypt       = require('bcrypt');
 const requireAuth  = require('../middleware/auth');
 const { getDB }    = require('../db');
 
+router.get('/leaderboard', requireAuth, async (req, res) => {
+  const page  = Math.max(1, parseInt(req.query.page) || 1);
+  const limit = 20;
+  const skip  = (page - 1) * limit;
+  const [users, total] = await Promise.all([
+    getDB().collection('users')
+      .find({}, { projection: { username: 1, stats: 1, memberSince: 1 } })
+      .sort({ 'stats.gamesPlayed': -1 })
+      .skip(skip).limit(limit).toArray(),
+    getDB().collection('users').countDocuments(),
+  ]);
+  res.json({ users, total, page, pages: Math.ceil(total / limit) });
+});
+
+router.get('/count', requireAuth, async (req, res) => {
+  const count = await getDB().collection('users').countDocuments();
+  res.json({ count });
+});
+
 router.get('/me', requireAuth, async (req, res) => {
   const user = await getDB().collection('users').findOne(
     { _id: new ObjectId(req.user.id) },
@@ -20,12 +39,9 @@ router.patch('/me', requireAuth, async (req, res) => {
     if (taken) return res.status(409).json({ error: 'Username already taken' });
     update.username = username;
   }
-  if (password) {
-    update.passwordHash = await bcrypt.hash(password, 6);
-  }
+  if (password) update.passwordHash = await bcrypt.hash(password, 6);
   if (!Object.keys(update).length)
     return res.status(400).json({ error: 'Nothing to update' });
-
   await getDB().collection('users').updateOne(
     { _id: new ObjectId(req.user.id) },
     { $set: update }

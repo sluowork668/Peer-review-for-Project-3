@@ -1,8 +1,9 @@
 import { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
-import Login from './pages/Login';
-import Lobby from './pages/Lobby';
-import Game  from './pages/Game';
+import Login       from './pages/Login';
+import Lobby       from './pages/Lobby';
+import Game        from './pages/Game';
+import Leaderboard from './pages/Leaderboard';
 import { api } from './api';
 import './App.css';
 
@@ -10,6 +11,7 @@ export default function App() {
   const [user,     setUser]     = useState(null);
   const [gameId,   setGameId]   = useState(null);
   const [gameOpts, setGameOpts] = useState(null);
+  const [showLB,   setShowLB]   = useState(false);
   const [loading,  setLoading]  = useState(true);
 
   useEffect(() => {
@@ -33,6 +35,7 @@ export default function App() {
     setUser(null);
     setGameId(null);
     setGameOpts(null);
+    setShowLB(false);
   }
 
   function handleJoinGame(id, opts = {}) {
@@ -43,7 +46,8 @@ export default function App() {
   if (loading) return <div className="app-loading">Loading...</div>;
   if (!user)   return <Login onLogin={handleLogin} />;
   if (gameId)  return <Game gameId={gameId} gameOpts={gameOpts} user={user} onLeave={() => { setGameId(null); setGameOpts(null); }} />;
-  return <Lobby user={user} onJoinGame={handleJoinGame} onLogout={handleLogout} />;
+  if (showLB)  return <Leaderboard onBack={() => setShowLB(false)} />;
+  return <Lobby user={user} onJoinGame={handleJoinGame} onLogout={handleLogout} onLeaderboard={() => setShowLB(true)} />;
 }
 
 Login.propTypes = { onLogin: PropTypes.func.isRequired };
@@ -53,12 +57,16 @@ Lobby.propTypes = {
     username: PropTypes.string.isRequired,
     stats:    PropTypes.shape({ wins: PropTypes.number, losses: PropTypes.number, gamesPlayed: PropTypes.number }),
   }).isRequired,
-  onJoinGame: PropTypes.func.isRequired,
-  onLogout:   PropTypes.func.isRequired,
+  onJoinGame:    PropTypes.func.isRequired,
+  onLogout:      PropTypes.func.isRequired,
+  onLeaderboard: PropTypes.func.isRequired,
 };
 Game.propTypes = {
   gameId:   PropTypes.string.isRequired,
   gameOpts: PropTypes.shape({ guest: PropTypes.bool }),
   user:     PropTypes.shape({ id: PropTypes.string.isRequired, username: PropTypes.string.isRequired }).isRequired,
   onLeave:  PropTypes.func.isRequired,
+};
+Leaderboard.propTypes = {
+  onBack: PropTypes.func.isRequired,
 };
