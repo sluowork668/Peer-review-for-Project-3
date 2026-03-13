@@ -8,25 +8,22 @@ function edgeKey(a, b) { return [Math.min(a,b), Math.max(a,b)].join('-'); }
 function detectTriangle(edges, player) {
   for (let a = 0; a < 6; a++)
     for (let b = a+1; b < 6; b++)
-      for (let c = b+1; c < 6; c++) {
-        if (
-          edges[edgeKey(a,b)] === player &&
-          edges[edgeKey(b,c)] === player &&
-          edges[edgeKey(a,c)] === player
-        ) return [a, b, c];
-      }
+      for (let c = b+1; c < 6; c++)
+        if (edges[edgeKey(a,b)] === player && edges[edgeKey(b,c)] === player && edges[edgeKey(a,c)] === player)
+          return [a, b, c];
   return null;
 }
 
 async function updateStats(db, winnerId, loserId) {
   const col = db.collection('users');
-  await col.updateOne({ _id: new ObjectId(winnerId) },
-    { $inc: { 'stats.wins': 1, 'stats.gamesPlayed': 1 } });
-  await col.updateOne({ _id: new ObjectId(loserId) },
-    { $inc: { 'stats.losses': 1, 'stats.gamesPlayed': 1 } });
+  if (winnerId && winnerId !== 'bot')
+    await col.updateOne({ _id: new ObjectId(winnerId) },
+      { $inc: { 'stats.wins': 1, 'stats.gamesPlayed': 1 } });
+  if (loserId && loserId !== 'bot')
+    await col.updateOne({ _id: new ObjectId(loserId) },
+      { $inc: { 'stats.losses': 1, 'stats.gamesPlayed': 1 } });
 }
 
-// POST /api/games/bot — instant game vs random AI
 router.post('/bot', requireAuth, async (req, res) => {
   const game = {
     players:        { 1: req.user.id, 2: 'bot' },
@@ -43,7 +40,6 @@ router.post('/bot', requireAuth, async (req, res) => {
   res.json({ gameId: insertedId });
 });
 
-// POST /api/games — challenge a human opponent
 router.post('/', requireAuth, async (req, res) => {
   const { opponentId } = req.body;
   if (!opponentId) return res.status(400).json({ error: 'opponentId required' });
@@ -62,7 +58,6 @@ router.post('/', requireAuth, async (req, res) => {
   res.json({ gameId: insertedId });
 });
 
-// GET /api/games/mine
 router.get('/mine', requireAuth, async (req, res) => {
   const uid = req.user.id;
   const games = await getDB().collection('games')
@@ -72,7 +67,6 @@ router.get('/mine', requireAuth, async (req, res) => {
   res.json(games);
 });
 
-// GET /api/games/:id
 router.get('/:id', requireAuth, async (req, res) => {
   const game = await getDB().collection('games')
     .findOne({ _id: new ObjectId(req.params.id) });
@@ -80,7 +74,6 @@ router.get('/:id', requireAuth, async (req, res) => {
   res.json(game);
 });
 
-// POST /api/games/:id/accept
 router.post('/:id/accept', requireAuth, async (req, res) => {
   const db   = getDB();
   const game = await db.collection('games').findOne({ _id: new ObjectId(req.params.id) });
@@ -96,7 +89,6 @@ router.post('/:id/accept', requireAuth, async (req, res) => {
   res.json({ ok: true });
 });
 
-// POST /api/games/:id/move
 router.post('/:id/move', requireAuth, async (req, res) => {
   const db   = getDB();
   const game = await db.collection('games').findOne({ _id: new ObjectId(req.params.id) });
@@ -134,11 +126,8 @@ router.post('/:id/move', requireAuth, async (req, res) => {
     }}
   );
 
-  if (finished && !game.isBot) {
-    await updateStats(db, game.players[winner], game.players[playerNum]);
-  }
+  if (finished) await updateStats(db, game.players[winner], game.players[playerNum]);
 
-  // bot takes its turn immediately after the human moves
   if (!finished && game.isBot && playerNum === 1) {
     const available = [];
     for (let a = 0; a < 6; a++)
@@ -151,7 +140,7 @@ router.post('/:id/move', requireAuth, async (req, res) => {
       const botEdges  = { ...newEdges, [botKey]: 2 };
       const botTri    = detectTriangle(botEdges, 2);
       const botDone   = !!botTri;
-      const botWinner = botDone ? 1 : null; // bot made triangle = human wins
+      const botWinner = botDone ? 1 : null;
 
       await db.collection('games').updateOne(
         { _id: new ObjectId(req.params.id) },
