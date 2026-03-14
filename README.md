@@ -9,3 +9,23 @@
 - **Slides:** [Google Slides]()
 
 ---
+
+## GenAI Usage
+
+- **Model:** Claude Sonnet 4.6 (Anthropic) — February 2026
+
+| **What it helped with** | **Prompt Used** |
+| --- | --- |
+
+
+---
+
+## Contributing
+
+Pull requests are welcome. Follow the standard GitHub process and the authors will review at their earliest convenience.
+
+---
+
+## License
+
+[MIT License](./LICENSE) — Copyright (c) 2026 Shashank More and Sarah Gillespie
