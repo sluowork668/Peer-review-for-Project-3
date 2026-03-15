@@ -12,7 +12,7 @@
 
 ## GenAI Usage
 
-- **Model:** Claude Sonnet 4.6 (Anthropic) — February 2026
+- **Model:** Claude Sonnet 4.6 (Anthropic) — March 2026
 
 | **What it helped with** | **Prompt Used** |
 | --- | --- |
