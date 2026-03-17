@@ -316,3 +316,40 @@
   font-size: 0.78rem;
   color: #b0a090;
 }
+
+.leaderboard-count {
+  font-size: 0.78rem;
+  color: #8c7b6b;
+  font-family: "Space Mono", monospace;
+  margin-top: 0.25rem;
+}
+
+.leaderboard-load-more {
+  padding: 1rem 1.25rem;
+  border-top: 0.5px solid #ede7d9;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.leaderboard-load-more-btn {
+  background: transparent;
+  border: 0.5px solid #c8bdb0;
+  color: #8c7b6b;
+  padding: 0.6rem 1.5rem;
+  border-radius: 6px;
+  font-family: "Space Mono", monospace;
+  font-size: 0.78rem;
+  transition: all 0.18s ease;
+  cursor: pointer;
+}
+
+.leaderboard-load-more-btn:hover:not(:disabled) {
+  border-color: #1c1a17;
+  color: #1c1a17;
+}
+
+.leaderboard-load-more-btn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}

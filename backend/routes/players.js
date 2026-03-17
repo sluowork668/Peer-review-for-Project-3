@@ -2,6 +2,7 @@ import { Router } from "express";
 import {
   createPlayer,
   getPlayers,
+  getPlayerCount,
   getPlayerByUsername,
   updatePlayerResult,
   updatePlayer,
@@ -12,6 +13,7 @@ const router = Router();
 
 router.post("/", createPlayer);
 router.get("/", getPlayers);
+router.get("/count", getPlayerCount);
 router.get("/:username", getPlayerByUsername);
 router.patch("/:username/result", updatePlayerResult);
 router.patch("/:username", updatePlayer);

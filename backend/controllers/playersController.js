@@ -43,7 +43,7 @@ export async function createPlayer(req, res) {
  */
 export async function getPlayers(req, res) {
   try {
-    const { sort = "wins", limit = 20 } = req.query;
+    const { sort = "wins", limit = 20, skip = 0 } = req.query;
     const db = getDB();
 
     const validSorts = ["wins", "winStreak", "totalGames"];
@@ -53,6 +53,7 @@ export async function getPlayers(req, res) {
       .collection("players")
       .find({})
       .sort({ [sortField]: -1 })
+      .skip(parseInt(skip))
       .limit(parseInt(limit))
       .toArray();
 
@@ -60,6 +61,17 @@ export async function getPlayers(req, res) {
   } catch (err) {
     console.error("getPlayers error:", err);
     res.status(500).json({ error: "Failed to fetch players" });
+  }
+}
+
+export async function getPlayerCount(req, res) {
+  try {
+    const db = getDB();
+    const count = await db.collection("players").countDocuments();
+    res.json({ count });
+  } catch (err) {
+    console.error("getPlayerCount error:", err);
+    res.status(500).json({ error: "Failed to get count" });
   }
 }
 

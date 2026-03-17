@@ -73,6 +73,8 @@ export const playersAPI = {
     return request(`/api/players${query ? "?" + query : ""}`);
   },
 
+  getCount: () => request("/api/players/count"),
+
   getByUsername: (username) => request(`/api/players/${username}`),
 
   updateResult: (username, won) =>

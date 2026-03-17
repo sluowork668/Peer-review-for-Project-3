@@ -17,8 +17,12 @@ export default function Leaderboard({ onBack }) {
   const {
     players,
     loading,
+    loadingMore,
     sort,
     setSort,
+    totalCount,
+    hasMore,
+    loadMore,
     selectedUsername,
     selectPlayer,
     deleteSelected,
@@ -45,6 +49,11 @@ export default function Leaderboard({ onBack }) {
           <div>
             <p className="leaderboard-eyebrow">Math Chaos</p>
             <h1 className="leaderboard-title">Leaderboard</h1>
+            {!loading && (
+              <p className="leaderboard-count">
+                Showing {players.length} of {totalCount} players
+              </p>
+            )}
           </div>
           <button
             className={`leaderboard-delete-btn ${
@@ -161,6 +170,19 @@ export default function Leaderboard({ onBack }) {
                 })}
               </tbody>
             </table>
+          )}
+          {hasMore && (
+            <div className="leaderboard-load-more">
+              <button
+                className="leaderboard-load-more-btn"
+                onClick={loadMore}
+                disabled={loadingMore}
+              >
+                {loadingMore
+                  ? "Loading..."
+                  : `Load More (${totalCount - players.length} remaining)`}
+              </button>
+            </div>
           )}
         </div>
       </div>
