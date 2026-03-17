@@ -22,8 +22,6 @@ Danielle: As a user, I want to learn game theory / math concepts by actively app
 
 ## Screenshots
 
-## Screenshots
-
 | View | Screenshot |
 | ---- | ---------- |
 | Home | ![Home](./screenshots/Home.png) |
