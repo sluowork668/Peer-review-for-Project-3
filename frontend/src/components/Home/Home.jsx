@@ -95,7 +95,7 @@ export default function Home({ onSelectGame, onLeaderboard }) {
         </h1>
         <p>
           A collection of deep, easy-to-learn mathematical games. No installs,
-          no accounts — just pick a game and play.
+          no accounts. Just pick a game and play.
         </p>
       </header>
 

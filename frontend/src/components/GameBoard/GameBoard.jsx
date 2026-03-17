@@ -293,16 +293,23 @@ export default function GameBoard({ config, onBackToMenu }) {
               <div className="board-math-concept">
                 <span className="board-math-concept-label">Math Concept</span>
                 <span className="board-math-concept-title">
-                  Ramsey Theory — R(3,3) = 6
+                  Ramsey Theory
                 </span>
                 <p className="board-math-concept-body">
-                  SIM demonstrates <strong>Ramsey Theory</strong>: in any
-                  2-coloring of the edges of a complete graph on{" "}
+                  SIM demonstrates Ramsey Theory, Ramsey Theory is a branch of mathematics. The <strong>Ramsey Number </strong> of R(3,3) = 6 is one of its most famous results.
+                  SIM demonstrates <strong>Ramsey Theory</strong> by demonstrating that in any
+                  two-coloring of the edges of a complete graph on 
                   <strong>6 nodes (K₆)</strong>, a monochromatic triangle must
-                  exist. This means SIM{" "}
-                  <strong>always produces a winner</strong> — a draw is
-                  mathematically impossible. R(3,3) = 6 is called a{" "}
-                  <strong>Ramsey number</strong>.
+                  exist. This means SIM <strong>always produces a winner</strong>. A tie is
+                  mathematically impossible.<br />
+
+                  References:<br />
+                  <a href="https://mathwithbaddrawings.com/2022/01/19/math-games-with-bad-drawings-2/" target="_blank" rel="noopener noreferrer"> <i>Math with Bad Drawings</i> book</a><br />
+
+                <a href="https://mathworld.wolfram.com/RamseyNumber.html"> List of known Ramsey Numbers</a>
+
+                  <a href="https://web.math.princeton.edu/~nalon/PDFS/listramsey6.pdf" target="_blank" rel="noopener noreferrer"> How to calculate Ramsey Numbers
+</a>
                 </p>
               </div>
             </div>

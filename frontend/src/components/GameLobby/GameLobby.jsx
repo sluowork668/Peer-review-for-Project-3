@@ -35,7 +35,7 @@ export default function GameLobby({ config, onGameReady, onBack }) {
             />
             <span className="lobby-status-text">
               {status === "waiting" && "Waiting for opponent..."}
-              {status === "ready" && "Opponent joined — starting game!"}
+              {status === "ready" && "Opponent joined. Starting game!"}
               {status === "error" && "Connection error"}
             </span>
           </div>
@@ -87,7 +87,7 @@ export default function GameLobby({ config, onGameReady, onBack }) {
           <div className="lobby-divider" />
 
           <button className="lobby-cancel-btn" onClick={onBack}>
-            Cancel — Back to Games
+            Cancel (Back to Games)
           </button>
         </div>
       </div>
