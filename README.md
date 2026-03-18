@@ -119,7 +119,7 @@ MongoDB (hosted on MongoDB Atlas)
 | MIT License | ✔ [LICENSE](./LICENSE) |
 | No leftover unused code | ✔ No default routes, no unused React favicon, no leftover files |
 | Google Form submission correct | ✔ Thumbnail + links verified |
-| Short narrated demo video | [Watch Here](https://drive.google.com/your-video-link) |
+| Short narrated demo video | [Watch Here](https://drive.google.com/file/d/1OLcyfXCRNRElA1f9QEQIUoRMftxcuRrG/view?usp=sharing) |
 | Code frozen on time | ✔ 24 hours before class |
 | Defines PropTypes for every React component | ✔ All components have PropTypes defined |
 | No axios, Mongoose, CORS or prohibited libraries | ✔ Native fetch, MongoDB driver, manual CORS headers, native ws |
