@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback } from "react";
-import Auth from "./components/Auth/auth.jsx";
+import Auth from "./components/Auth/Auth.jsx";
 import Home from "./components/Home/Home.jsx";
 import GameMenu from "./components/GameMenu/GameMenu.jsx";
 import GameLobby from "./components/GameLobby/GameLobby.jsx";
