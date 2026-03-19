@@ -2,9 +2,12 @@ import express from "express";
 import { createServer } from "http";
 import { WebSocketServer } from "ws";
 import dotenv from "dotenv";
+import session from "express-session";
+import passport from "./config/passport.js";
 import { connectDB } from "./db.js";
 import gamesRouter from "./routes/games.js";
 import playersRouter from "./routes/players.js";
+import authRouter from "./routes/auth.js";
 import { handleWebSocket } from "./webSocket/wsHandler.js";
 
 dotenv.config();
@@ -29,12 +32,30 @@ app.use((req, res, next) => {
     "GET, POST, PATCH, DELETE, OPTIONS"
   );
   res.setHeader("Access-Control-Allow-Headers", "Content-Type");
+  res.setHeader("Access-Control-Allow-Credentials", "true");
   if (req.method === "OPTIONS") return res.sendStatus(204);
   next();
 });
 
 app.use(express.json());
 
+app.use(
+  session({
+    secret: process.env.SESSION_SECRET || "mathchaos-secret",
+    resave: false,
+    saveUninitialized: false,
+    cookie: {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      maxAge: 1000 * 60 * 60 * 24 * 7,
+    },
+  })
+);
+
+app.use(passport.initialize());
+app.use(passport.session());
+
+app.use("/api/auth", authRouter);
 app.use("/api/games", gamesRouter);
 app.use("/api/players", playersRouter);
 

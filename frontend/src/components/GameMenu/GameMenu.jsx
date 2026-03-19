@@ -88,16 +88,13 @@ function HexPreview() {
   );
 }
 
-export default function GameMenu({ onStartGame, onBack }) {
-  const [username, setUsername] = useState(
-    localStorage.getItem("sim_username") || ""
-  );
+export default function GameMenu({ onStartGame, onBack, username }) {
   const [mode, setMode] = useState("ai");
   const [difficulty, setDifficulty] = useState("hard");
   const [roomCode, setRoomCode] = useState("");
   const [isJoining, setIsJoining] = useState(false);
 
-  const { startGame, loading, error } = useGameSetup(onStartGame);
+  const { startGame, loading, error } = useGameSetup(onStartGame, username);
 
   function getStartLabel() {
     if (loading) return "Starting...";
@@ -107,7 +104,7 @@ export default function GameMenu({ onStartGame, onBack }) {
   }
 
   function handleStart() {
-    startGame({ username, mode, difficulty, isJoining, roomCode });
+    startGame({ mode, difficulty, isJoining, roomCode });
   }
 
   return (
@@ -150,15 +147,17 @@ export default function GameMenu({ onStartGame, onBack }) {
         {/* Right — form */}
         <div className="menu-form">
           <div className="menu-field">
-            <label className="menu-field-label">Username</label>
-            <input
+            <label className="menu-field-label">Playing as</label>
+            <div
               className="menu-input"
-              type="text"
-              placeholder="Enter your username..."
-              value={username}
-              onChange={(e) => setUsername(e.target.value)}
-              maxLength={20}
-            />
+              style={{
+                color: "#8C7B6B",
+                cursor: "default",
+                userSelect: "none",
+              }}
+            >
+              {username}
+            </div>
           </div>
 
           <div className="menu-divider" />
@@ -260,4 +259,5 @@ export default function GameMenu({ onStartGame, onBack }) {
 GameMenu.propTypes = {
   onStartGame: PropTypes.func.isRequired,
   onBack: PropTypes.func.isRequired,
+  username: PropTypes.string.isRequired,
 };

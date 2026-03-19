@@ -95,7 +95,7 @@ export function useGameLobby(config, onGameReady) {
     }, 1500);
 
     return () => clearInterval(interval);
-  }, [resolvedGameId]);
+  }, [resolvedGameId, config, onGameReady]);
 
   return { status, error };
 }

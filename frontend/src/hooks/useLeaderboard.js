@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback } from "react";
-import { playersAPI } from "../api/api.js";
+import { playersAPI, authAPI } from "../api/api.js";
 
 const PAGE_SIZE = 20;
 
@@ -13,7 +13,6 @@ export function useLeaderboard() {
   const [selectedUsername, setSelectedUsername] = useState(null);
   const [deleting, setDeleting] = useState(false);
 
-  // Initial load / sort change
   useEffect(() => {
     async function fetchPlayers() {
       setLoading(true);
@@ -36,7 +35,6 @@ export function useLeaderboard() {
     fetchPlayers();
   }, [sort]);
 
-  // Load more
   const loadMore = useCallback(async () => {
     setLoadingMore(true);
     try {
@@ -65,6 +63,18 @@ export function useLeaderboard() {
       await playersAPI.delete(selectedUsername);
       setPlayers((prev) => prev.filter((p) => p.username !== selectedUsername));
       setTotalCount((prev) => prev - 1);
+
+      const currentUsername = localStorage.getItem("sim_username") || "";
+      const isDeletingSelf =
+        selectedUsername.toLowerCase() === currentUsername.toLowerCase();
+
+      if (isDeletingSelf) {
+        await authAPI.logout();
+        localStorage.removeItem("sim_username");
+        window.location.reload();
+        return;
+      }
+
       setSelectedUsername(null);
     } catch (err) {
       console.error("Failed to delete player:", err);

@@ -67,7 +67,12 @@ const GAMES = [
   },
 ];
 
-export default function Home({ onSelectGame, onLeaderboard }) {
+export default function Home({
+  onSelectGame,
+  onLeaderboard,
+  onLogout,
+  username,
+}) {
   return (
     <div className="home-container">
       {/* Navbar */}
@@ -77,8 +82,21 @@ export default function Home({ onSelectGame, onLeaderboard }) {
           <span>Math Chaos</span>
         </div>
         <div className="home-nav-actions">
+          <span
+            style={{
+              fontFamily: "Space Mono, monospace",
+              fontSize: "0.78rem",
+              color: "#8C7B6B",
+            }}
+          >
+            {username}
+          </span>
+          <div className="home-nav-divider" />
           <button className="home-nav-btn" onClick={onLeaderboard}>
             Leaderboard
+          </button>
+          <button className="home-nav-btn" onClick={onLogout}>
+            Log Out
           </button>
         </div>
       </nav>
@@ -165,4 +183,6 @@ export default function Home({ onSelectGame, onLeaderboard }) {
 Home.propTypes = {
   onSelectGame: PropTypes.func.isRequired,
   onLeaderboard: PropTypes.func.isRequired,
+  onLogout: PropTypes.func.isRequired,
+  username: PropTypes.string.isRequired,
 };

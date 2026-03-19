@@ -46,6 +46,18 @@
   gap: 0.5rem;
 }
 
+.home-nav-divider {
+  width: 1px;
+  height: 20px;
+  background: #c8bdb0;
+}
+
+.home-nav-username {
+  font-family: "Space Mono", monospace;
+  font-size: 0.78rem;
+  color: #8c7b6b;
+}
+
 .home-nav-btn {
   background: transparent;
   border: 0.5px solid #c8bdb0;

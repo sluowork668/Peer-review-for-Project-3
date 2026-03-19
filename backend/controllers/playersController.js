@@ -1,6 +1,9 @@
 import { getDB } from "../db.js";
 
-/** Create Player */
+function usernameQuery(username) {
+  return { username: { $regex: new RegExp(`^${username}$`, "i") } };
+}
+
 export async function createPlayer(req, res) {
   try {
     const { username } = req.body;
@@ -10,11 +13,11 @@ export async function createPlayer(req, res) {
     }
 
     const db = getDB();
-    const clean = username.trim().toLowerCase();
+    const clean = username.trim();
 
     const existing = await db
       .collection("players")
-      .findOne({ username: clean });
+      .findOne(usernameQuery(clean));
     if (existing) {
       return res.status(200).json(existing);
     }
@@ -38,9 +41,6 @@ export async function createPlayer(req, res) {
   }
 }
 
-/**
- * GET all players
- */
 export async function getPlayers(req, res) {
   try {
     const { sort = "wins", limit = 20, skip = 0 } = req.query;
@@ -75,15 +75,12 @@ export async function getPlayerCount(req, res) {
   }
 }
 
-/**
- * GET player by username
- */
 export async function getPlayerByUsername(req, res) {
   try {
     const db = getDB();
     const player = await db
       .collection("players")
-      .findOne({ username: req.params.username.toLowerCase() });
+      .findOne(usernameQuery(req.params.username));
 
     if (!player) return res.status(404).json({ error: "Player not found" });
     res.json(player);
@@ -93,16 +90,15 @@ export async function getPlayerByUsername(req, res) {
   }
 }
 
-/**
- * Update player results after a game ends
- */
 export async function updatePlayerResult(req, res) {
   try {
     const { won } = req.body;
     const db = getDB();
-    const username = req.params.username.toLowerCase();
+    const username = req.params.username;
 
-    const player = await db.collection("players").findOne({ username });
+    const player = await db
+      .collection("players")
+      .findOne(usernameQuery(username));
     if (!player) return res.status(404).json({ error: "Player not found" });
 
     const newWins = won ? player.wins + 1 : player.wins;
@@ -111,7 +107,7 @@ export async function updatePlayerResult(req, res) {
     const newBestStreak = Math.max(player.bestStreak, newStreak);
 
     await db.collection("players").updateOne(
-      { username },
+      { _id: player._id },
       {
         $set: {
           wins: newWins,
@@ -125,7 +121,7 @@ export async function updatePlayerResult(req, res) {
     );
 
     res.json({
-      username,
+      username: player.username,
       wins: newWins,
       losses: newLosses,
       totalGames: newWins + newLosses,
@@ -138,13 +134,10 @@ export async function updatePlayerResult(req, res) {
   }
 }
 
-/**
- * Update player profile (general updates, not just results)
- */
 export async function updatePlayer(req, res) {
   try {
     const db = getDB();
-    const username = req.params.username.toLowerCase();
+    const username = req.params.username;
 
     const {
       _id,
@@ -163,13 +156,14 @@ export async function updatePlayer(req, res) {
 
     allowed.updatedAt = new Date();
 
-    const result = await db
+    const player = await db
       .collection("players")
-      .updateOne({ username }, { $set: allowed });
+      .findOne(usernameQuery(username));
+    if (!player) return res.status(404).json({ error: "Player not found" });
 
-    if (result.matchedCount === 0) {
-      return res.status(404).json({ error: "Player not found" });
-    }
+    await db
+      .collection("players")
+      .updateOne({ _id: player._id }, { $set: allowed });
 
     res.json({ success: true, updated: allowed });
   } catch (err) {
@@ -178,20 +172,20 @@ export async function updatePlayer(req, res) {
   }
 }
 
-/**
- * Delete a player profile
- */
 export async function deletePlayer(req, res) {
   try {
     const db = getDB();
-    const result = await db
-      .collection("players")
-      .deleteOne({ username: req.params.username });
+    const username = req.params.username;
 
-    if (result.deletedCount === 0) {
-      return res.status(404).json({ error: "Player not found" });
-    }
-    res.json({ success: true });
+    const player = await db
+      .collection("players")
+      .findOne(usernameQuery(username));
+    if (!player) return res.status(404).json({ error: "Player not found" });
+
+    await db.collection("players").deleteOne({ _id: player._id });
+    await db.collection("users").deleteOne(usernameQuery(username));
+
+    res.json({ success: true, deleted: player.username });
   } catch (err) {
     console.error("deletePlayer error:", err);
     res.status(500).json({ error: "Failed to delete player" });

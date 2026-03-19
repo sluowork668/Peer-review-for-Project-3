@@ -3,6 +3,7 @@ const BASE_URL = import.meta.env.VITE_API_URL || "http://localhost:5001";
 async function request(path, options = {}) {
   const res = await fetch(`${BASE_URL}${path}`, {
     headers: { "Content-Type": "application/json" },
+    credentials: "include",
     ...options,
   });
   const data = await res.json();
@@ -32,6 +33,25 @@ function normalizeIds(obj) {
   }
   return obj;
 }
+
+/** Auth APIs */
+export const authAPI = {
+  signup: (username, password) =>
+    request("/api/auth/signup", {
+      method: "POST",
+      body: JSON.stringify({ username, password }),
+    }),
+
+  login: (username, password) =>
+    request("/api/auth/login", {
+      method: "POST",
+      body: JSON.stringify({ username, password }),
+    }),
+
+  logout: () => request("/api/auth/logout", { method: "POST" }),
+
+  me: () => request("/api/auth/me"),
+};
 
 /** Games APIs */
 export const gamesAPI = {

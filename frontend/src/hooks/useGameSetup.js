@@ -1,31 +1,31 @@
 import { useState, useCallback } from "react";
-import { gamesAPI, playersAPI } from "../api/api.js";
+import { gamesAPI } from "../api/api.js";
 
-export function useGameSetup(onStartGame) {
+export function useGameSetup(onStartGame, username) {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
-  async function createAIGame(player, difficulty) {
+  async function createAIGame(difficulty) {
     const game = await gamesAPI.create({
       gameName: "sim",
       mode: "ai",
-      players: [{ username: player.username, color: "red" }],
+      players: [{ username, color: "red" }],
       difficulty,
     });
     return {
       gameId: game._id,
       mode: "ai",
       playerColor: "red",
-      username: player.username,
+      username,
       difficulty,
     };
   }
 
-  async function createMultiplayerRoom(player) {
+  async function createMultiplayerRoom() {
     const game = await gamesAPI.create({
       gameName: "sim",
       mode: "multiplayer",
-      players: [{ username: player.username, color: "red" }],
+      players: [{ username, color: "red" }],
     });
     const roomCode = game._id.toString().slice(-6).toUpperCase();
     await gamesAPI.updateStatus(game._id, { roomCode });
@@ -33,32 +33,27 @@ export function useGameSetup(onStartGame) {
       gameId: game._id,
       mode: "multiplayer",
       playerColor: "red",
-      username: player.username,
+      username,
       isHost: true,
       roomCode,
     };
   }
 
-  function joinMultiplayerRoom(player, roomCode) {
+  function joinMultiplayerRoom(roomCode) {
     return {
       gameId: null,
       mode: "multiplayer",
       playerColor: "blue",
-      username: player.username,
+      username,
       isHost: false,
       roomCode: roomCode.trim().toUpperCase(),
     };
   }
 
   const startGame = useCallback(
-    async ({ username, mode, difficulty, isJoining, roomCode }) => {
+    async ({ mode, difficulty, isJoining, roomCode = "" }) => {
       setError("");
-      const cleanName = username.trim();
 
-      if (!cleanName) {
-        setError("Please enter a username.");
-        return;
-      }
       if (mode === "multiplayer" && isJoining && !roomCode.trim()) {
         setError("Please enter a room code.");
         return;
@@ -66,16 +61,13 @@ export function useGameSetup(onStartGame) {
 
       setLoading(true);
       try {
-        const player = await playersAPI.create(cleanName);
-        localStorage.setItem("sim_username", cleanName);
-
         let config;
         if (mode === "ai") {
-          config = await createAIGame(player, difficulty);
+          config = await createAIGame(difficulty);
         } else if (!isJoining) {
-          config = await createMultiplayerRoom(player);
+          config = await createMultiplayerRoom();
         } else {
-          config = joinMultiplayerRoom(player, roomCode);
+          config = joinMultiplayerRoom(roomCode);
         }
 
         onStartGame(config);
@@ -85,7 +77,7 @@ export function useGameSetup(onStartGame) {
         setLoading(false);
       }
     },
-    [onStartGame]
+    [onStartGame, username]
   );
 
   return { startGame, loading, error };
