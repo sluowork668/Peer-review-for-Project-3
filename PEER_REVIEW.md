@@ -1,7 +1,7 @@
 # Peer Review — Math-Chaos
 
 **Reviewer:** Shuwen Luo
-**Project:** AlgoLearn
+**Project:** Math Chaos
 **Course:** CS5610 Web Development  
 **Semester:** Spring 2026   
 
