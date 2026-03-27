@@ -1,5 +1,10 @@
 # Peer Review — Math-Chaos
 
+**Reviewer:** Shuwen Luo
+**Project:** AlgoLearn
+**Course:** CS5610 Web Development  
+**Semester:** Spring 2026   
+
 ## Overall Impression
 
 This project is very well executed and clearly demonstrates strong full-stack development skills. The idea of turning a mathematical game (SIM / Ramsey theory) into an interactive web application is both creative and educational. It stands out because it combines gameplay, real-time interaction, and learning in a meaningful way.
